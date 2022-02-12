@@ -22,7 +22,7 @@ export class ArticlesService {
     const sort: ArticlesSort = {};
     const availableSorts = ['likes'];
 
-    if (sort) {
+    if (sortQuery) {
       const [key, value] = sortQuery.split(':');
       if (availableSorts.includes(key)) {
         sort[key] = value === 'desc' ? -1 : 1;
