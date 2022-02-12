@@ -3,6 +3,9 @@ import { ArticlesModule } from './articles/articles.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthorsModule } from './authors/authors.module';
 import { RouterModule } from '@nestjs/core';
+import { ConfigModule } from '@nestjs/config';
+import { config } from 'dotenv';
+config({ path: '.env' });
 
 @Module({
   imports: [
@@ -11,22 +14,22 @@ import { RouterModule } from '@nestjs/core';
     RouterModule.register([
       {
         path: '/v1',
-        module: ArticlesModule,
+        module: ArticlesModule
       },
       {
         path: '/v1',
-        module: AuthorsModule,
-      },
+        module: AuthorsModule
+      }
     ]),
-    MongooseModule.forRoot('mongodb://localhost/blog', {
+    MongooseModule.forRoot(process.env.MONGODB_URI, {
       connectionFactory: (connection) => {
         // connection.plugin(autoPopulate);
         connection.plugin(require('mongoose-autopopulate'));
         return connection;
-      },
-    }),
+      }
+    })
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
 export class AppModule {}
