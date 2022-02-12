@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, ObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { AddCommentToArticleDto } from './dto/add-comment.dto';
 import { Article, ArticleDocument } from './entities/article.entity';
@@ -9,7 +9,7 @@ import { ArticlesSort } from './interfaces';
 @Injectable()
 export class ArticlesService {
   constructor(
-    @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
+    @InjectModel(Article.name) private articleModel: Model<ArticleDocument>
   ) {}
 
   async create(createArticleDto: CreateArticleDto) {
@@ -34,67 +34,56 @@ export class ArticlesService {
     return articles;
   }
 
-  async findOne(id: ObjectId) {
+  async findOne(id: ArticleDocument['_id']) {
     const article = await this.articleModel.findById(id);
 
     if (!article) {
-      return { message: 'Article not found' };
+      throw new NotFoundException('Article not found');
     }
 
     return article;
   }
 
   async findByTitle(title: string) {
-    const article = await this.articleModel.findOne({ title });
+    const articles = await this.articleModel.find({
+      $text: {
+        $search: `"\"${title}\""`,
+        $language: 'english',
+        $caseSensitive: false
+      }
+    });
 
-    if (!article) {
-      return { message: 'Article not found' };
-    }
-
-    return article;
+    return articles;
   }
 
-  async incrementLikes(_id: ObjectId) {
+  async incrementLikes(_id: ArticleDocument['_id']) {
     const article = await this.articleModel.findOneAndUpdate(
       { _id },
       { $inc: { likes: 1 } },
-      { new: true },
+      { new: true }
     );
 
     if (!article) {
-      return { message: 'Article not found' };
+      throw new NotFoundException('Article not found');
     }
 
     return article;
   }
 
   async addComment(
-    _id: ObjectId,
-    addCommentToArticleDto: AddCommentToArticleDto,
+    _id: ArticleDocument['_id'],
+    addCommentToArticleDto: AddCommentToArticleDto
   ) {
     const article = await this.articleModel.findOneAndUpdate(
       { _id },
       { $push: { comments: addCommentToArticleDto } },
-      { new: true },
+      { new: true }
     );
 
     if (!article) {
-      return { message: 'Article not found' };
+      throw new NotFoundException('Article not found');
     }
 
     return article;
-  }
-
-  async remove(_id: ObjectId) {
-    const deletedArticle = await this.articleModel.findOneAndDelete(
-      { _id },
-      { new: true },
-    );
-
-    if (!deletedArticle) {
-      return { message: 'Article not found' };
-    }
-
-    return { message: 'Article deleted!' };
   }
 }

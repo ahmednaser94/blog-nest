@@ -1,8 +1,9 @@
-import { IsString, IsMongoId } from 'class-validator';
-import { ObjectId } from 'mongoose';
-import { CreateArticleDto } from './create-article.dto';
+import { IsString, IsNotEmpty } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class AddCommentToArticleDto {
   @IsString()
-  body?: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  body: string;
 }
