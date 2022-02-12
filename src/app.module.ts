@@ -5,6 +5,7 @@ import { AuthorsModule } from './authors/authors.module';
 import { RouterModule } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { config } from 'dotenv';
+import { AppController } from './app.controller';
 config({ path: '.env' });
 
 @Module({
@@ -29,7 +30,7 @@ config({ path: '.env' });
       }
     })
   ],
-  controllers: [],
+  controllers: [AppController],
   providers: []
 })
 export class AppModule {}
