@@ -1,18 +1,32 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { AddCommentToArticleDto } from './dto/add-comment.dto';
 import { Article, ArticleDocument } from './entities/article.entity';
 import { ArticlesSort } from './interfaces';
+import { Author, AuthorDocument } from '../authors/entities/author.entity';
 
 @Injectable()
 export class ArticlesService {
   constructor(
-    @InjectModel(Article.name) private articleModel: Model<ArticleDocument>
+    @InjectModel(Article.name) private articleModel: Model<ArticleDocument>,
+    @InjectModel(Author.name) private authorModel: Model<AuthorDocument>
   ) {}
 
   async create(createArticleDto: CreateArticleDto) {
+    const isAuthorExists = await this.authorModel.findById(
+      createArticleDto.author
+    );
+
+    if (!isAuthorExists) {
+      throw new BadRequestException('Author _id is not valid.');
+    }
+
     const article = await this.articleModel.create(createArticleDto);
 
     return article;
