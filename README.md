@@ -24,8 +24,9 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+This is a Blog system which consisting of Authors who can post articles and comments for articles, give thumbs up articles 
 
+To explore the API documentation head to: HOST_URL/api
 ## Installation
 
 ```bash
@@ -56,6 +57,12 @@ $ npm run test:e2e
 
 # test coverage
 $ npm run test:cov
+```
+
+## Usage
+
+```curl
+{{url}}/api
 ```
 
 ## Support
