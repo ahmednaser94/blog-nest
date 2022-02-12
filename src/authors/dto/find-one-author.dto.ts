@@ -1,7 +1,8 @@
-import { IsMongoId } from 'class-validator';
-import { ObjectId } from 'mongoose';
+import { IsMongoId, IsNotEmpty } from 'class-validator';
+import { AuthorDocument } from '../entities/author.entity';
 
 export class AuthorIdParamDto {
   @IsMongoId()
-  _id: ObjectId;
+  @IsNotEmpty()
+  _id: AuthorDocument['_id'];
 }
