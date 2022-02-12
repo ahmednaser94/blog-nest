@@ -7,21 +7,21 @@ import {
   Param,
   Delete,
   Query,
-  HttpCode,
+  HttpCode
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { AddCommentToArticleDto } from './dto/add-comment.dto';
 import { CreateArticleDto } from './dto/create-article.dto';
 import {
   ArticleIdParamDto,
-  FindOneArticleByTitleDto,
+  FindOneArticleByTitleDto
 } from './dto/find-one-article.dto';
 import {
   ApiParam,
   ApiBody,
   ApiOperation,
   ApiCreatedResponse,
-  ApiOkResponse,
+  ApiOkResponse
 } from '@nestjs/swagger';
 import { Article } from './entities/article.entity';
 
@@ -31,12 +31,12 @@ export class ArticlesController {
 
   @ApiOperation({ description: 'Create an article for an author' })
   @ApiBody({
-    type: CreateArticleDto,
+    type: CreateArticleDto
   })
   @ApiCreatedResponse({
     description: 'The article has been successfully created.',
     type: Article,
-    status: 201,
+    status: 201
   })
   @Post()
   create(@Body() createArticleDto: CreateArticleDto) {
@@ -47,41 +47,47 @@ export class ArticlesController {
   @ApiParam({
     name: '_id',
     description: 'Article ObjectId',
-    example: '62055430c52b99d17554c9c6',
+    example: '62055430c52b99d17554c9c6'
   })
   @ApiBody({
-    type: AddCommentToArticleDto,
+    type: AddCommentToArticleDto
   })
   @ApiCreatedResponse({
     type: Article,
-    status: 201,
+    status: 201
   })
   @Post(':_id/comments')
   addComment(
     @Param() params: ArticleIdParamDto,
-    @Body() addCommentToArticleDto: AddCommentToArticleDto,
+    @Body() addCommentToArticleDto: AddCommentToArticleDto
   ) {
     return this.articlesService.addComment(params._id, addCommentToArticleDto);
   }
 
   @ApiOperation({
     description:
-      'Find all articles, can be sorted by liked ascending or descending',
+      'Find all articles, can be sorted by liked ascending or descending'
   })
   @ApiOkResponse({
-    type: [Article],
+    type: [Article]
   })
   @Get()
   findAll(@Query('sort') sortQuery?: string) {
     return this.articlesService.findAll(sortQuery);
   }
 
-  @Get('/search')
-  @ApiBody({
-    type: FindOneArticleByTitleDto,
+  @ApiOperation({
+    description: 'Find all articles that matches with typed title'
   })
   @ApiOkResponse({
-    type: Article,
+    type: [Article]
+  })
+  @Get('/search')
+  @ApiBody({
+    type: FindOneArticleByTitleDto
+  })
+  @ApiOkResponse({
+    type: Article
   })
   findOneByTitle(@Body() findOneArticleByTitleDto: FindOneArticleByTitleDto) {
     return this.articlesService.findByTitle(findOneArticleByTitleDto.title);
@@ -90,10 +96,10 @@ export class ArticlesController {
   @ApiParam({
     name: '_id',
     description: 'Article ObjectId',
-    example: '62055430c52b99d17554c9c6',
+    example: '62055430c52b99d17554c9c6'
   })
   @ApiOkResponse({
-    type: Article,
+    type: Article
   })
   @Get(':_id')
   findOne(@Param() params: ArticleIdParamDto) {
@@ -103,10 +109,10 @@ export class ArticlesController {
   @ApiParam({
     name: '_id',
     description: 'Article ObjectId',
-    example: '62055430c52b99d17554c9c6',
+    example: '62055430c52b99d17554c9c6'
   })
   @ApiOkResponse({
-    type: Article,
+    type: Article
   })
   @Patch(':_id/likes')
   update(@Param() params: ArticleIdParamDto) {
